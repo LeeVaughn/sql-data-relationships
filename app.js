@@ -64,10 +64,25 @@ console.log('Testing the connection to the database...');
 
     // Add Movies to the Database
     console.log('Adding movies to the database...');
+    const movieInstances = await Promise.all([
+      Movie.create({
+        title: 'The Iron Giant',
+        releaseYear: 1999,
+      }),
+      Movie.create({
+        title: 'The Incredibles',
+        releaseYear: 2004,
+      }),
+    ]);
+    console.log(JSON.stringify(movieInstances, null, 2));
 
     // Retrieve movies
+    const movies = await Movie.findAll();
+    console.log(movies.map(movie => movie.get({ plain: true })));
 
     // Retrieve people
+    const people = await Person.findAll();
+    console.log(people.map(person => person.get({ plain: true })));
 
     process.exit();
   } catch (error) {
