@@ -1,4 +1,5 @@
 'use strict';
+
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -20,7 +21,12 @@ module.exports = (sequelize) => {
   }, { sequelize });
 
   Movie.associate = (models) => {
-    Movie.belongsTo(models.Person);
+    Movie.belongsTo(models.Person, {
+      foreignKey: {
+        fieldName: 'directorPersonId',
+        allowNull: false,
+      },
+    });
   };
 
   return Movie;
