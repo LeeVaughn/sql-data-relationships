@@ -1,6 +1,10 @@
 'use strict';
 
 const { sequelize, models } = require('./db');
+// Same as:
+// const dbModule = require('./db');
+// const sequelize = dbModule.sequelize;
+// const models = dbModule.models;
 
 // Get references to our models.
 const { Person, Movie } = models;
@@ -23,14 +27,40 @@ console.log('Testing the connection to the database...');
   try {
     // Test the connection to the database
     console.log('Connection to the database successful!');
+    await sequelize.authenticate();
 
-    // Sync the models
+    // Sync the models and drops any existing tables with the force parameter
     console.log('Synchronizing the models with the database...');
+    await sequelize.sync({ force: true });
 
     // Add People to the Database
     console.log('Adding people to the database...');
-  
+    const peopleInstances = await Promise.all([
+      Person.create({
+        firstName: 'Brad',
+        lastName: 'Bird',
+      }),
+      Person.create({
+        firstName: 'Vin',
+        lastName: 'Diesel',
+      }),
+      Person.create({
+        firstName: 'Eli',
+        lastName: 'Marienthal',
+      }),
+      Person.create({
+        firstName: 'Craig T.',
+        lastName: 'Nelson',
+      }),
+      Person.create({
+        firstName: 'Holly',
+        lastName: 'Hunter',
+      }),
+    ]);
+    console.log(JSON.stringify(peopleInstances, null, 2));
+
     // Update the global variables for the people instances
+    [bradBird, vinDiesel, eliMarienthal, craigTNelson, hollyHunter] = peopleInstances;
 
     // Add Movies to the Database
     console.log('Adding movies to the database...');
@@ -40,8 +70,7 @@ console.log('Testing the connection to the database...');
     // Retrieve people
 
     process.exit();
-
-  } catch(error) {
+  } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       const errors = error.errors.map(err => err.message);
       console.error('Validation errors: ', errors);
@@ -50,4 +79,3 @@ console.log('Testing the connection to the database...');
     }
   }
 })();
-
