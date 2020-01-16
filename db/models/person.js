@@ -1,4 +1,5 @@
 'use strict';
+
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -20,7 +21,7 @@ module.exports = (sequelize) => {
   }, { sequelize });
 
   Person.associate = (models) => {
-    // TODO Add associations.
+    Person.hasMany(models.Movie);
   };
 
   return Person;
